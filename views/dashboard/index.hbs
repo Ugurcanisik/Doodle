@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{>head}}
+
+  {{>head.css}}
+
+  {{>head.js}}
+</head>
+
+<body class="nav-md">
+
+<div class="container body">
+  <div class="main_container">
+
+    {{>head.sidebar}}
+
+    {{>head.topnav}}
+
+
+
+    <!-- page content -->
+    <div class="right_col" role="main">
+      <!-- top tiles -->
+
+
+    
+
+      <!-- /top tiles -->
+
+
+
+    <div class="modal fade" id="openaddmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" style="text-align: center;" id="exampleModalLabel">Toplantı Ekle</h5>
+
+          </div>
+          <div class="modal-body">
+          
+               <div class="mb-4" style="margin-top: 15px;">
+
+
+                <label for="message-text" class="col-form-label">Toplanti Tarihleri:</label>
+                <select class="form-control col-md-7 col-xs-12" id="seciliTarih" name="seciliTarih">
+            
+                </select>
+              </div>
+            <br><br><br>
+              <div class="modal-footer" style=" text-align: center;">
+                <input type="hidden" id="tarihsecid" value="">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <input type="button" id="saveMeetingDate" class="btn btn-primary" value="Kaydet">
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+        {{!-- start oylama modal --}}
+    <div class="modal fade" id="oylamodal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+          <div class="modal-body">
+            <div id="yildiz" style="text-align: center;">
+
+        <i class="fa fa-star" style="font-size: 70px;" ></i>
+      <i class="fa fa-star" style="font-size: 70px;" ></i>
+        <i class="fa fa-star" style="font-size: 70px;" ></i>
+      <i class="fa fa-star" style="font-size: 70px;" ></i>
+        <i class="fa fa-star" style="font-size: 70px;" ></i>
+<input type="hidden" id="oylaid" value="">
+</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    {{!-- end oylama modal --}}
+
+
+      <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="x_panel">
+            <div class="x_title">
+              <h2>Toplantı Talepleri</h2>
+
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+
+             
+              <table id="data-table" cellspacing="0" width="100%" class="table table-striped table-bordered">
+                <thead>
+                <tr>
+
+                  <th style="text-align: center;">Toplantı Adı</th>
+                  <th style="text-align: center;">Toplantı Konusu</th>
+                  <th style="text-align: center;">Toplantı Zamanı</th>
+                  <th style="text-align: center;">İşlemler</th>
+
+                </tr>
+                </thead>
+
+
+                <tbody style="text-align: center;">
+
+                </tbody>
+              </table>
+
+
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+
+    <script>
+       $(document).ready(function() {
+           let datatable = $("#data-table").DataTable({
+          "processing": true,
+          "ajax": {
+            url: "meeting/toplantilarim",
+            type: "POST"
+          },
+          columns: [
+            { data: "toplantiAdi" },
+            { data: "toplantiKonusu" },
+            { data: "toplantiZamani" }
+          ],
+          columnDefs: [
+            {
+              render: function(data, type, row) {
+
+                let html = ""
+               
+                if(row.toplantiDurumu){
+                 html +=  `<input type="button" data-value="${row.id}" class="btn btn-success deleted" name="delete" value="Katıl" disabled>`;
+                }else{
+                 html +=  `<input type="button" data-value="${row.id}" class="btn btn-success deleted" name="delete" value="Katıl">`;
+                }
+
+                if(row.oylama != 0 && row.toplantiBittimi==true){
+                   html +=  `<input type="button" data-id="${row.id}" class="btn btn-primary oyla"  value="Oyla" disabled>`;
+                }else if(row.oylama==0 && row.toplantiBittimi==true){
+                  html +=  `<input type="button" data-id="${row.id}" class="btn btn-primary oyla" value="Oyla" >`;
+                      }
+
+                      return html
+                 },
+              targets: 3
+            }
+          ]
+
+
+        });
+
+       $("#data-table").on("click", ".deleted", function() {
+                    
+
+                $.ajax({
+                  url: 'meeting/tarihListele',
+                  type: "POST",
+                  data:  {id: $(this).data("value")},
+                  success: function(result) {
+
+
+                  $('#tarihsecid').val(result.id)
+
+                    let x = document.getElementById("seciliTarih")
+
+                    
+           result.tarihler.forEach(element => {
+
+                let option = document.createElement('option')
+
+
+                    option.text=element
+                    option.value=element
+                    x.add(option)
+
+                    });
+
+    
+
+                        $("#openaddmodal").modal("show");
+
+                
+                  }
+                });
+
+
+
+
+
+
+        });
+
+
+         $("#data-table").on("click", ".oyla", function() {
+           $('#oylaid').val($(this).data("id"))
+              $("#oylamodal").modal("show");
+         })
+
+
+        $('#saveMeetingDate').click(function(){
+
+         $.ajax({
+                  url: 'meeting/toplantidurumuguncelle',
+                  type: "PATCH",
+                  data:  {tarih: $('#seciliTarih').val(),
+                  id: $('#tarihsecid').val()},
+                  success: function(result) {
+                    datatable.ajax.reload()
+                     $("#openaddmodal").modal("hide");
+                  }
+                });
+        })
+
+
+          let kontrol=0
+
+        	$("#yildiz i").mouseover(function(){//yıldızların üzerine mouse ile gelinirse
+
+					var index=$(this).index();//üzerine gelinenin sayfadaki sırasını al.
+
+					$("#yildiz i").css("color","#000")//tüm yıldızları siyah yap
+
+					
+
+					for(i=index;i>=0;i--){//seçtiğimiz yıldız ve altındakileri döngüye alıyoruz.
+
+						$("#yildiz i:eq("+i+")").css("color","blue");//tek tek renklerini değiştiriyoruz.
+
+					}
+
+			})
+
+      	$("#yildiz i").mouseout(function(){//yıldızların üzerinden mouse çekilirse
+
+				if(kontrol==0){//kontrol 0 ise
+
+					$("#yildiz i").css("color","#000");//hepsini siyah yap
+
+				}
+
+			})
+
+
+      
+			$("#yildiz i").click(function(){//yıldıza tıklanırsa
+
+				var index=$(this).index()+1;//seçilen yıldız sayısını buluyoruz.
+
+				kontrol=1;//kontrolü 1 yapıyoruz
+
+				alert(index+" yıldız verdiniz.");//yıldız sayısını ekrana bastırıyoruz.
+
+        $.ajax({
+                  url: 'meeting/oylama',
+                  type: "PATCH",
+                  data:  {oylama: index, id: $('#oylaid').val()},
+                  success: function(result) {
+                    datatable.ajax.reload()
+                     $("#oylamodal").modal("hide");
+                  }
+                });
+
+
+			})
+
+
+
+
+       })
+    </script>
+
+
+    <footer>
+      {{>footer}}
+    </footer>
+    <!-- /footer content -->
+  </div>
+</div>
+
+{{>footer.js}}
+
+</body>
+</html>

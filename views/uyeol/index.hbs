@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Login Form</title>
+
+  <!-- Bootstrap -->
+  <link href="vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link href="vendors/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <!-- NProgress -->
+  <link href="vendors/nprogress/nprogress.css" rel="stylesheet">
+  <!-- Animate.css -->
+  <link href="vendors/animate.css/animate.min.css" rel="stylesheet">
+
+  <!-- Custom Theme Style -->
+  <link href="build/css/custom.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="last/css/izito.css">
+
+  <script src="last/js/jquery351.js"></script>
+
+
+</head>
+
+<body class="login">
+<div class="login_wrapper">
+  <div class="animate form login_form">
+    <section class="login_content">
+      <form action="" method="dialog" id="login">
+        <h1>Üye Ol</h1>
+        <div>
+          <input type="text" class="form-control" name="name" placeholder="isim" required="" />
+        </div>
+         <div>
+          <input type="text" class="form-control" name="lastname" placeholder="soyisim" required="" />
+        </div>
+         <div>
+          <input type="text" class="form-control" name="username" placeholder="kullanıcı adi" required="" />
+        </div>
+        <div>
+          <input type="password" class="form-control" name="password" placeholder="parola" required="" />
+        </div>
+        <div>
+          <input type="submit" style="margin-left: 38%;"  class="btn btn-default submit" value="Üye Ol">
+        </div>
+        <div class="clearfix"></div>
+
+      </form>
+    </section>
+  </div>
+</div>
+
+
+<script>
+  $(document).ready(function(event) {
+
+    $("#login").submit(function(event) {
+
+      event.preventDefault();
+
+
+      $.ajax({
+        type: "POST",
+        url: "/uyeol",
+        data: $(this).serialize(),
+        success: function(result) {
+
+         if (result == "true") {
+            Swal.fire({
+              icon: "success",
+              title: "Kayıt Başarılı Başarılı",
+              showConfirmButton: false,
+              allowOutsideClick: false
+            });
+            $.success("/login");
+          } else {
+            $.alerts("warning", "Bilinmeye Hata");
+          }
+
+        }
+      });
+    });
+
+
+  });
+</script>
+
+
+<script src="last/js/izito.js"></script>
+<script src="js/login.js"></script>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+</body>
+</html>

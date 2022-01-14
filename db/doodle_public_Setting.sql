@@ -1,0 +1,1 @@
+INSERT INTO public."Setting" (id, title, keywords, logo, ico, description, companyname, deleted) VALUES ('883f32e1-9338-4344-b7dd-ca46208c5979', 'Noxus Chocolate', 'noxus,chocolate,workshop', 'noxus.jpg', 'noxusico.png', 'Noxus Chocolate Workshop', 'Noxus Chocolate', false);

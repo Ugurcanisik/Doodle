@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {{>head}}
+
+  {{>head.css}}
+
+  {{>head.js}}
+</head>
+
+<body class="nav-md">
+<div class="container body">
+  <div class="main_container">
+
+    {{>head.sidebar}}
+
+    {{>head.topnav}}
+
+    <!-- page content -->
+    <div class="right_col" role="main">
+      <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="x_panel">
+            <button class="btn btn-success addusers" style="position: relative; float:right">Toplantı Ekle</button>
+            <div class="x_title">
+              <h2>Toplantı İşlemleri</h2>
+
+              <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+
+              <table id="data-table" cellspacing="0" width="100%" class="table table-striped table-bordered">
+                <thead>
+                <tr>
+                  <th style="text-align: center;">+</th>
+                  <th style="text-align: center;">Toplantı Adı</th>
+                  <th style="text-align: center;">Toplantı Konusu</th>
+                  <th style="text-align: center;">Toplantı Zamanı</th>
+                  <th style="text-align: center;">İşlemler</th>
+
+                </tr>
+                </thead>
+
+
+                <tbody style="text-align: center;">
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- /page content -->
+
+
+    {{!-- add toplatı start --}}
+    <div class="modal fade" id="openaddmodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" style="text-align: center;" id="exampleModalLabel">Toplantı Ekle</h5>
+
+          </div>
+          <div class="modal-body">
+            <form method="dialog" action="" id="addusers">
+              <div class="mb-4">
+                <label for="recipient-name" class="col-form-label">Toplantı Adı:</label>
+                <input type="text" class="form-control" name="toplantiAdi"  required="">
+              </div>
+              <br>
+              <div class="mb-4">
+                <label for="message-text" class="col-form-label">Toplantı Konusu:</label>
+                <input type="text" class="form-control" name="toplantiKonusu"  required="">
+              </div>
+              <br>
+
+              <div class="mb-4" >
+                <label for="message-text" class="col-form-label">Katılımcılar:</label>
+                <select class="selectpicker form-control" multiple data-live-search="true" name="katilimcilar">
+                  {{#each allUsers}}
+
+                    <option value="{{id}}">{{name}}</option>
+
+                  {{/each}}
+</select>
+              </div>
+              <br>
+               <div class="mb-4" >
+                <label for="message-text" class="col-form-label">Tarih:</label>
+                <div class="input-group date todaydate">
+                  <input type="text" class="form-control todaydate" id="toplantiZamani" style="text-align: center;" name="toplantiZamani" required="">
+
+                  <span class="input-group-addon"><span class="glyphicon-calendar glyphicon"></span></span>
+                </div>
+                <center>
+                <input type="button" name="" class="btn btn-primary" id="tarihEkle" value="Tarih Ekle">
+                <br>
+                <p>Seçili Tarihler</p>
+                <p id="seciliTarihler"></p>
+                </center>
+               
+              </div>
+              <div class="modal-footer" style="margin-bottom: -15px; text-align: center;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <input type="submit" name="" class="btn btn-primary" value="Kaydet">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{!-- add toplantı end --}}
+
+    {{!-- update modal start --}}
+    <div class="modal fade" id="openupdatemodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" style="text-align: center;" id="exampleModalLabel">Toplantı Güncelle</h5>
+
+          </div>
+          <div class="modal-body">
+        
+             <form action="">
+                 <div class="mb-4" style="margin-top: 15px;">
+                <label for="message-text" class="col-form-label">Toplanti Tarihleri:</label>
+                <select class="form-control col-md-7 col-xs-12" id="seciliTarih" name="seciliTarih">
+            
+                </select>
+              </div>
+
+              <br><br>
+
+              <div class="mb-4" style="margin-top: 15px;">
+                <label for="message-text" class="col-form-label">Toplantı Bittimi:</label>
+                <select class="form-control col-md-7 col-xs-12" id="toplantibittimi" name="toplantibittimi">
+                  <option value="false">Hayır</option>
+                  <option value="true">Evet</option>
+
+                </select>
+              </div>
+          </form>
+
+            <br><br><br>
+              <div class="modal-footer" style=" text-align: center;" >
+                <input type="hidden" id="tarihsecid" value="">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                <input type="button" id="saveMeetingDate" class="btn btn-primary" value="Kaydet">
+              </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    {{!-- update modal end --}}
+
+
+    {{!-- start details modal --}}
+    <div class="modal fade" id="detailmodal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+          <div class="modal-body">
+            <center id="details">
+
+            </center>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    {{!-- end details modal --}}
+
+
+
+
+    <script>
+      $(document).ready(function() {
+        let tarihler ="";
+        let diziTarihler = []
+
+        $('#tarihEkle').click(function(){
+        
+
+        tarihler += $('#toplantiZamani').val() + "<br>"
+
+        $('#seciliTarihler').html(tarihler)
+
+
+        diziTarihler.push($('#toplantiZamani').val())
+          
+        })
+
+        let datatable = $("#data-table").DataTable({
+          "processing": true,
+          "ajax": {
+            url: "meeting/list",
+            type: "POST"
+          },
+          columns: [
+            { data: "" },
+            { data: "toplantiAdi" },
+            { data: "toplantiKonusu" },
+            { data: "toplantiZamani" }
+          ],
+          columnDefs: [
+               {
+              render: function(data, type, row) {
+                 const html = `<i data-id="${row.id}" class="fa fa-plus deneme" ></i>`;
+                return html;
+              },
+              targets: 0
+            },
+            {
+              render: function(data, type, row) {
+                const html = `<button class="btn btn-success updateusers"  data-id="${row.id}" name="update">Güncelle</button>` +
+                  `<input type="button" data-url="users/delete" data-value="${row.id}" class="btn btn-danger deleted" name="delete" value="Sil">`;
+                return html;
+              },
+              targets: 4
+            }
+          ]
+
+
+        });
+
+
+        $(".addusers").click(function() {
+          $(".todaydate").val(new Date().format("d-m-Y H:i:s").toLocaleString("tr-TR"));
+          $('#seciliTarihler').html('')
+          $("#openaddmodal").modal("show");
+          tarihler = ""
+          diziTarihler = []
+        });
+
+        $("#addusers").submit(function() {
+
+          $('#toplantiZamani').val(diziTarihler)
+
+          $.ajax({
+            type: "POST",
+            url: "/meeting/add",
+            data: $(this).serialize(),
+            success: function(result) {
+
+
+              $.alerts("success", "Well done");
+
+              $("#openaddmodal").modal("hide");
+
+              datatable.ajax.reload();
+
+            }
+          })
+            .fail(function(err) {
+              $.errorMessage(err);
+            });
+
+
+        });
+
+
+
+        $("#data-table").on("click", ".updateusers", function() {
+
+       $.ajax({
+                  url: 'meeting/toplantitarihlistele',
+                  type: "POST",
+                  data:  {id: $(this).data("id")},
+                  success: function(result) {
+
+
+                  $('#tarihsecid').val(result.id)
+
+                    let x = document.getElementById("seciliTarih")
+
+                    
+           result.tarihler.forEach(element => {
+
+                let option = document.createElement('option')
+
+
+                    option.text=element
+                    option.value=element
+                    x.add(option)
+
+                    });
+
+
+                    $("#openupdatemodal").modal("show");
+                
+                  }
+                });
+        });
+
+
+        $('#saveMeetingDate').click(function(){
+
+         $.ajax({
+                  url: 'meeting/updatemeeting',
+                  type: "PATCH",
+                  data:  {tarih: $('#seciliTarih').val(),
+                  id: $('#tarihsecid').val(),
+                  toplantiBittimi: $('#toplantibittimi').val()},
+                  success: function(result) {
+
+
+                    datatable.ajax.reload()
+                     $("#openupdatemodal").modal("hide");
+                
+                  }
+                });
+          
+        })
+
+
+        $("#data-table").on("click", ".deleted", function() {
+
+          swal({
+            title: "Are you sure?",
+            text: "Once deleted,",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true
+          })
+            .then((willDelete) => {
+              if (willDelete) {
+
+
+                $.ajax({
+                  url: $(this).data("url"),
+                  type: "DELETE",
+                  data: { id: $(this).data("value") },
+                  success: function(result) {
+                    datatable.ajax.reload();
+                    swal("Poof! Your imaginary file has been deleted!", {
+                      icon: "success"
+                    });
+                  }
+                });
+
+
+              } else {
+                swal("Your imaginary file is safe!");
+              }
+            });
+
+
+        });
+
+
+
+
+            $("#data-table").on("click", ".deneme", function() {
+
+          const id = $(this).data("id");
+
+
+          $.ajax({
+            type: "POST",
+            url: "/meeting/details",
+            data: { id: id },
+            success: function(result) {
+
+             
+
+              let topTarihler = []
+
+              result.forEach(element=>{
+                topTarihler.push(element.tarih)
+              })
+
+
+            let n=topTarihler.length,sayac=0,i,j,k,l;
+
+            let dizi = topTarihler
+            let detail = "";
+            let tarihsecenisimler = []
+
+
+              for( j=0;j<n;j++){
+              for( k=0;k<n;k++){
+                    if(dizi[j]==dizi[k]){
+                     for( l=0;l<j;l++){
+                        if(dizi[l]==dizi[j])
+                          sayac=-1;
+                          }
+                      sayac++;
+                    }
+            }
+            if (sayac != 0){
+
+
+                detail += `<span>${dizi[j]} Tarihini ${sayac} Kişi Seçti</span> <br><br> `;
+
+
+                result.forEach(element=>{
+
+                  if(element.tarih==dizi[j]){
+                   if(tarihsecenisimler.indexOf(element.isim)==-1){
+                    detail += `<span>İsim : ${element.adi}</span> <br>  `;
+                    if(element.oylama==0){
+                    detail += `<span>Oylaması : Henüz Oylama Yapmadı </span> <br><br> `;
+
+                    }else{
+                    detail += `<span>Oylaması : ${element.oylama}</span> <br><br> `;
+                    }
+                     }
+                  }
+
+               
+
+
+                })
+
+
+
+            }
+
+               
+           
+                sayac=0;
+    }
+
+              $('#details').html(detail)
+              $("#detailmodal").modal("show");
+
+            }
+          })
+         
+
+        });
+
+
+      });
+    </script>
+
+    <script>
+      $(".todaydate").datetimepicker({
+        format: "DD-MM-YYYY HH:mm:ss",
+        
+      });
+            $(document).ready(function(){
+$('#katilimcilar').selectpicker();
+        
+      })
+    </script>
+    <!-- footer content -->
+    <footer>
+      {{>footer}}
+    </footer>
+    <!-- /footer content -->
+  </div>
+</div>
+
+{{>footer.js}}
+</body>
+</html>

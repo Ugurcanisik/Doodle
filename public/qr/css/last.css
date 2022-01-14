@@ -1,0 +1,51 @@
+
+body{
+    padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 10px;
+}
+
+.ktbaslik{
+	font-size: 20px; 
+	color: black;
+	font-family: 'Baloo Chettan 2', cursive;
+}
+
+.kategori{
+    font-family: 'Baloo Chettan 2', cursive; 
+    font-size:20px; 
+	color: black;
+}
+
+
+
+
+.urunad{
+	font-family: 'Baloo Chettan 2', cursive;
+	font-size: 20px;
+	color: black;
+}
+
+.urunfiyat{
+	font-family: 'Baloo Chettan 2', cursive;
+    float: right;
+	font-size: 20px; 
+	color: black;
+}
+
+.urundetay{
+	font-family: 'Baloo Chettan 2', cursive;
+	font-size: 15px;
+}
+
+
+.swpon {
+    background-color: black;
+    color: white;
+}
+
+.swpof {
+    background-color: white;
+    color: black;
+}
+
